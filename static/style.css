@@ -1,0 +1,60 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+h1 {
+    color: #333;
+}
+
+form {
+    margin-bottom: 20px;
+}
+
+.project {
+    margin-bottom: 40px;
+}
+
+.task-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.task-column {
+    width: 30%;
+    background: #f4f4f4;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.task-column h3 {
+    text-align: center;
+}
+
+.task {
+    background: #fff;
+    margin: 5px 0;
+    padding: 10px;
+    border-radius: 4px;
+    cursor: move;
+}
+
+.delete-task {
+    background: none;
+    border: none;
+    color: red;
+    float: right;
+    cursor: pointer;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    background: #f4f4f4;
+    margin: 5px 0;
+    padding: 10px;
+    border-radius: 4px;
+}
