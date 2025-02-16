@@ -1,11 +1,49 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
+import pandas as pd
 
 app = Flask(__name__)
 
-projects = []
-tasks = []
-project_id_counter = 1
-task_id_counter = 1
+EXCEL_FILE = "data.xlsx"
+
+
+def load_data():
+    try:
+        df_projects = pd.read_excel(EXCEL_FILE, sheet_name="Projects")
+        df_tasks = pd.read_excel(EXCEL_FILE, sheet_name="Tasks")
+        projects = df_projects.to_dict(orient="records")
+        tasks = df_tasks.to_dict(orient="records")
+        for project in projects:
+            project["tasks"] = [
+                task for task in tasks if task["project_id"] == project["id"]
+            ]
+        return projects
+    except FileNotFoundError:
+        return []
+
+
+def save_data(projects):
+    df_projects = pd.DataFrame([{"id": p["id"], "name": p["name"]} for p in projects])
+    df_tasks = pd.DataFrame(
+        [
+            {
+                "id": t["id"],
+                "name": t["name"],
+                "state": t["state"],
+                "notes": t["notes"],
+                "project_id": p["id"],
+            }
+            for p in projects
+            for t in p["tasks"]
+        ]
+    )
+    with pd.ExcelWriter(EXCEL_FILE) as writer:
+        df_projects.to_excel(writer, sheet_name="Projects", index=False)
+        df_tasks.to_excel(writer, sheet_name="Tasks", index=False)
+
+
+projects = load_data()
+project_id_counter = max([p["id"] for p in projects], default=0) + 1
+task_id_counter = max([t["id"] for p in projects for t in p["tasks"]], default=0) + 1
 
 
 @app.route("/")
@@ -20,6 +58,7 @@ def add_project():
     if project_name:
         projects.append({"id": project_id_counter, "name": project_name, "tasks": []})
         project_id_counter += 1
+        save_data(projects)
     return redirect(url_for("index"))
 
 
@@ -36,9 +75,11 @@ def add_task(project_id):
                         "name": task_name,
                         "state": "backlog",
                         "notes": "",
+                        "project_id": project_id,
                     }
                 )
                 task_id_counter += 1
+                save_data(projects)
                 break
     return redirect(url_for("index"))
 
@@ -50,6 +91,7 @@ def update_task_state(task_id):
         for task in project["tasks"]:
             if task["id"] == task_id:
                 task["state"] = new_state
+                save_data(projects)
                 break
     return jsonify({"success": True})
 
@@ -61,6 +103,7 @@ def update_task_notes(task_id):
         for task in project["tasks"]:
             if task["id"] == task_id:
                 task["notes"] = new_notes
+                save_data(projects)
                 break
     return jsonify({"success": True})
 
@@ -69,6 +112,7 @@ def update_task_notes(task_id):
 def delete_task(task_id):
     for project in projects:
         project["tasks"] = [task for task in project["tasks"] if task["id"] != task_id]
+    save_data(projects)
     return jsonify({"success": True})
 
 

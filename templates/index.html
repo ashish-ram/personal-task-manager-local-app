@@ -11,70 +11,79 @@
     <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
 </head>
 <body>
-    <h1>Task Manager</h1>
-    <div style="text-align: right;">
-        <label for="project-filter">Filter by Project:</label>
-        <select id="project-filter">
-            <option value="all">All Projects</option>
-            {% for project in projects %}
-                <option value="project-{{ project.id }}">{{ project.name }}</option>
-            {% endfor %}
-        </select>
+    <header>
+        <h1>Task Manager</h1>
+    </header>
+    <div class="subheader">
+        <div style="text-align: right;">
+            <label for="project-filter">Filter by Project:</label>
+            <select id="project-filter">
+                <option value="all">All Projects</option>
+                {% for project in projects %}
+                    <option value="project-{{ project.id }}">{{ project.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <form action="{{ url_for('add_project') }}" method="post">
+            <input type="text" name="project" placeholder="Enter a new project">
+            <button type="submit">Add Project</button>
+        </form>
     </div>
-    <form action="{{ url_for('add_project') }}" method="post">
-        <input type="text" name="project" placeholder="Enter a new project">
-        <button type="submit">Add Project</button>
-    </form>
-    {% for project in projects %}
-        <div class="project project-{{ project.id }}">
-            <h2>{{ project.name }}</h2>
-            <form action="{{ url_for('add_task', project_id=project.id) }}" method="post">
-                <input type="text" name="task" placeholder="Enter a new task">
-                <button type="submit">Add Task</button>
-            </form>
-            <div class="task-container">
-                <div class="task-column" id="backlog-{{ project.id }}">
-                    <h3>Backlog</h3>
-                    {% for task in project.tasks if task.state == 'backlog' %}
-                        <div class="task" data-task-id="{{ task.id }}">
-                            {{ task.name }}
-                            <button class="toggle-notes" data-task-id="{{ task.id }}">&#x25BC;</button>
-                            <div class="notes-container" data-task-id="{{ task.id }}" style="display: none;">
-                                <div class="task-notes" data-task-id="{{ task.id }}">{{ task.notes }}</div>
+    <main>
+        {% for project in projects %}
+            <div class="project project-{{ project.id }}">
+                <h2>{{ project.name }}</h2>
+                <form action="{{ url_for('add_task', project_id=project.id) }}" method="post">
+                    <input type="text" name="task" placeholder="Enter a new task">
+                    <button type="submit">Add Task</button>
+                </form>
+                <div class="task-container">
+                    <div class="task-column" id="backlog-{{ project.id }}">
+                        <h3>Backlog</h3>
+                        {% for task in project.tasks if task.state == 'backlog' %}
+                            <div class="task" data-task-id="{{ task.id }}">
+                                {{ task.name }}
+                                <button class="toggle-notes" data-task-id="{{ task.id }}">&#x25BC;</button>
+                                <div class="notes-container" data-task-id="{{ task.id }}" style="display: none;">
+                                    <div class="task-notes" data-task-id="{{ task.id }}">{{ task.notes }}</div>
+                                </div>
+                                <button class="delete-task" data-task-id="{{ task.id }}">&#10060;</button>
                             </div>
-                            <button class="delete-task" data-task-id="{{ task.id }}">&#10060;</button>
-                        </div>
-                    {% endfor %}
-                </div>
-                <div class="task-column" id="ongoing-{{ project.id }}">
-                    <h3>Ongoing</h3>
-                    {% for task in project.tasks if task.state == 'ongoing' %}
-                        <div class="task" data-task-id="{{ task.id }}">
-                            {{ task.name }}
-                            <button class="toggle-notes" data-task-id="{{ task.id }}">&#x25BC;</button>
-                            <div class="notes-container" data-task-id="{{ task.id }}" style="display: none;">
-                                <div class="task-notes" data-task-id="{{ task.id }}">{{ task.notes }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="task-column" id="ongoing-{{ project.id }}">
+                        <h3>Ongoing</h3>
+                        {% for task in project.tasks if task.state == 'ongoing' %}
+                            <div class="task" data-task-id="{{ task.id }}">
+                                {{ task.name }}
+                                <button class="toggle-notes" data-task-id="{{ task.id }}">&#x25BC;</button>
+                                <div class="notes-container" data-task-id="{{ task.id }}" style="display: none;">
+                                    <div class="task-notes" data-task-id="{{ task.id }}">{{ task.notes }}</div>
+                                </div>
+                                <button class="delete-task" data-task-id="{{ task.id }}">&#10060;</button>
                             </div>
-                            <button class="delete-task" data-task-id="{{ task.id }}">&#10060;</button>
-                        </div>
-                    {% endfor %}
-                </div>
-                <div class="task-column" id="finished-{{ project.id }}">
-                    <h3>Finished</h3>
-                    {% for task in project.tasks if task.state == 'finished' %}
-                        <div class="task" data-task-id="{{ task.id }}">
-                            {{ task.name }}
-                            <button class="toggle-notes" data-task-id="{{ task.id }}">&#x25BC;</button>
-                            <div class="notes-container" data-task-id="{{ task.id }}" style="display: none;">
-                                <div class="task-notes" data-task-id="{{ task.id }}">{{ task.notes }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="task-column" id="finished-{{ project.id }}">
+                        <h3>Finished</h3>
+                        {% for task in project.tasks if task.state == 'finished' %}
+                            <div class="task" data-task-id="{{ task.id }}">
+                                {{ task.name }}
+                                <button class="toggle-notes" data-task-id="{{ task.id }}">&#x25BC;</button>
+                                <div class="notes-container" data-task-id="{{ task.id }}" style="display: none;">
+                                    <div class="task-notes" data-task-id="{{ task.id }}">{{ task.notes }}</div>
+                                </div>
+                                <button class="delete-task" data-task-id="{{ task.id }}">&#10060;</button>
                             </div>
-                            <button class="delete-task" data-task-id="{{ task.id }}">&#10060;</button>
-                        </div>
-                    {% endfor %}
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
-        </div>
-    {% endfor %}
+        {% endfor %}
+    </main>
+    <footer>
+        <p>&copy; 2023 Task Manager. All rights reserved.</p>
+    </footer>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             var containers = Array.prototype.slice.call(document.querySelectorAll('.task-column'));
