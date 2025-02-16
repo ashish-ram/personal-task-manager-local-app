@@ -173,8 +173,21 @@
                 });
             });
 
+            document.querySelectorAll('.task').forEach(function(task) {
+                task.addEventListener('dblclick', function() {
+                    var taskId = this.getAttribute('data-task-id');
+                    var div = document.querySelector(`.notes-container[data-task-id='${taskId}']`);
+                    if (div.style.display === 'none') {
+                        div.style.display = 'block';
+                    } else {
+                        div.style.display = 'none';
+                    }
+                });
+            });
+
             document.querySelectorAll('.toggle-notes').forEach(function(button) {
-                button.addEventListener('click', function() {
+                button.addEventListener('click', function(e) {
+                    e.stopPropagation(); // Prevent the task notes toggle from triggering
                     var taskId = this.getAttribute('data-task-id');
                     var div = document.querySelector(`.notes-container[data-task-id='${taskId}']`);
                     if (div.style.display === 'none') {
@@ -188,7 +201,8 @@
             });
 
             document.querySelectorAll('.task-name').forEach(function(span) {
-                span.addEventListener('dblclick', function() {
+                span.addEventListener('dblclick', function(e) {
+                    e.stopPropagation(); // Prevent the task notes toggle from triggering
                     var taskId = this.getAttribute('data-task-id');
                     var currentName = this.textContent;
                     var input = document.createElement('input');
