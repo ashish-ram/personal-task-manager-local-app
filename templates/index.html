@@ -28,67 +28,72 @@
         </div>
         <form action="{{ url_for('add_project') }}" method="post">
             <input type="text" name="project" placeholder="Enter a new project">
+            <input type="color" name="color" value="#e0f7fa"> <!-- Add color picker -->
             <button type="submit">Add Project</button>
         </form>
     </div>
     <main>
         {% for project in projects %}
             <div class="project project-{{ project.id }}">
-                <div class="project-header">
+                <div class="project-header" data-project-id="{{ project.id }}" style="background-color: {{ project.color }};">
+                    <i class="fas fa-eye-dropper project-color-picker-icon" data-project-id="{{ project.id }}"></i> <!-- Add dropper icon -->
+                    <input type="color" class="project-color-picker" data-project-id="{{ project.id }}" value="{{ project.color }}" style="display: none;"> <!-- Hidden color picker -->
                     <h2>{{ project.name }}</h2>
                     <button class="delete-project" data-project-id="{{ project.id }}">
                         <i class="fas fa-trash-alt"></i>
                     </button>
                 </div>
-                <form action="{{ url_for('add_task', project_id=project.id) }}" method="post">
-                    <input type="text" name="task" placeholder="Enter a new task">
-                    <button type="submit">Add Task</button>
-                </form>
-                <div class="task-container">
-                    <div class="task-column" id="backlog-{{ project.id }}">
-                        <h3>Backlog</h3>
-                        {% for task in project.tasks if task.state == 'backlog' %}
-                            <div class="task" data-task-id="{{ task.id }}">
-                                <span class="task-name" data-task-id="{{ task.id }}">{{ task.name }}</span>
-                                <button class="toggle-notes" data-task-id="{{ task.id }}">&#x25BC;</button>
-                                <div class="notes-container" data-task-id="{{ task.id }}" style="display: none;">
-                                    <div class="task-notes" data-task-id="{{ task.id }}">{% autoescape false %}{{ task.notes }}{% endautoescape %}</div>
+                <div class="project-content" data-project-id="{{ project.id }}">
+                    <form action="{{ url_for('add_task', project_id=project.id) }}" method="post">
+                        <input type="text" name="task" placeholder="Enter a new task">
+                        <button type="submit">Add Task</button>
+                    </form>
+                    <div class="task-container">
+                        <div class="task-column" id="backlog-{{ project.id }}">
+                            <h3>Backlog</h3>
+                            {% for task in project.tasks if task.state == 'backlog' %}
+                                <div class="task" data-task-id="{{ task.id }}">
+                                    <span class="task-name" data-task-id="{{ task.id }}">{{ task.name }}</span>
+                                    <button class="toggle-notes" data-task-id="{{ task.id }}">&#x25BC;</button>
+                                    <div class="notes-container" data-task-id="{{ task.id }}" style="display: none;">
+                                        <div class="task-notes" data-task-id="{{ task.id }}">{% autoescape false %}{{ task.notes }}{% endautoescape %}</div>
+                                    </div>
+                                    <button class="delete-task" data-task-id="{{ task.id }}">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
                                 </div>
-                                <button class="delete-task" data-task-id="{{ task.id }}">
-                                    <i class="fas fa-trash-alt"></i>
-                                </button>
-                            </div>
-                        {% endfor %}
-                    </div>
-                    <div class="task-column" id="ongoing-{{ project.id }}">
-                        <h3>Ongoing</h3>
-                        {% for task in project.tasks if task.state == 'ongoing' %}
-                            <div class="task" data-task-id="{{ task.id }}">
-                                <span class="task-name" data-task-id="{{ task.id }}">{{ task.name }}</span>
-                                <button class="toggle-notes" data-task-id="{{ task.id }}">&#x25BC;</button>
-                                <div class="notes-container" data-task-id="{{ task.id }}" style="display: none;">
-                                    <div class="task-notes" data-task-id="{{ task.id }}">{% autoescape false %}{{ task.notes }}{% endautoescape %}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="task-column" id="ongoing-{{ project.id }}">
+                            <h3>Ongoing</h3>
+                            {% for task in project.tasks if task.state == 'ongoing' %}
+                                <div class="task" data-task-id="{{ task.id }}">
+                                    <span class="task-name" data-task-id="{{ task.id }}">{{ task.name }}</span>
+                                    <button class="toggle-notes" data-task-id="{{ task.id }}">&#x25BC;</button>
+                                    <div class="notes-container" data-task-id="{{ task.id }}" style="display: none;">
+                                        <div class="task-notes" data-task-id="{{ task.id }}">{% autoescape false %}{{ task.notes }}{% endautoescape %}</div>
+                                    </div>
+                                    <button class="delete-task" data-task-id="{{ task.id }}">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
                                 </div>
-                                <button class="delete-task" data-task-id="{{ task.id }}">
-                                    <i class="fas fa-trash-alt"></i>
-                                </button>
-                            </div>
-                        {% endfor %}
-                    </div>
-                    <div class="task-column" id="finished-{{ project.id }}">
-                        <h3>Finished</h3>
-                        {% for task in project.tasks if task.state == 'finished' %}
-                            <div class="task" data-task-id="{{ task.id }}">
-                                <span class="task-name" data-task-id="{{ task.id }}">{{ task.name }}</span>
-                                <button class="toggle-notes" data-task-id="{{ task.id }}">&#x25BC;</button>
-                                <div class="notes-container" data-task-id="{{ task.id }}" style="display: none;">
-                                    <div class="task-notes" data-task-id="{{ task.id }}">{% autoescape false %}{{ task.notes }}{% endautoescape %}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="task-column" id="finished-{{ project.id }}">
+                            <h3>Finished</h3>
+                            {% for task in project.tasks if task.state == 'finished' %}
+                                <div class="task" data-task-id="{{ task.id }}">
+                                    <span class="task-name" data-task-id="{{ task.id }}">{{ task.name }}</span>
+                                    <button class="toggle-notes" data-task-id="{{ task.id }}">&#x25BC;</button>
+                                    <div class="notes-container" data-task-id="{{ task.id }}" style="display: none;">
+                                        <div class="task-notes" data-task-id="{{ task.id }}">{% autoescape false %}{{ task.notes }}{% endautoescape %}</div>
+                                    </div>
+                                    <button class="delete-task" data-task-id="{{ task.id }}">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
                                 </div>
-                                <button class="delete-task" data-task-id="{{ task.id }}">
-                                    <i class="fas fa-trash-alt"></i>
-                                </button>
-                            </div>
-                        {% endfor %}
+                            {% endfor %}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -230,6 +235,42 @@
                         if (e.key === 'Enter') {
                             input.blur();
                         }
+                    });
+                });
+            });
+
+            document.querySelectorAll('.project-header').forEach(function(header) {
+                header.addEventListener('dblclick', function() {
+                    var projectId = this.getAttribute('data-project-id');
+                    var content = document.querySelector(`.project-content[data-project-id='${projectId}']`);
+                    if (content.style.display === 'none') {
+                        content.style.display = 'block';
+                    } else {
+                        content.style.display = 'none';
+                    }
+                });
+            });
+
+            document.querySelectorAll('.project-color-picker-icon').forEach(function(icon) {
+                icon.addEventListener('click', function() {
+                    var projectId = this.getAttribute('data-project-id');
+                    var colorPicker = document.querySelector(`.project-color-picker[data-project-id='${projectId}']`);
+                    colorPicker.click();
+                });
+            });
+
+            document.querySelectorAll('.project-color-picker').forEach(function(input) {
+                input.addEventListener('input', function() {
+                    var projectId = this.getAttribute('data-project-id');
+                    var newColor = this.value;
+                    fetch(`/update_project_color/${projectId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ color: newColor })
+                    }).then(function() {
+                        document.querySelector(`.project-header[data-project-id='${projectId}']`).style.backgroundColor = newColor;
                     });
                 });
             });

@@ -22,7 +22,16 @@ def load_data():
 
 
 def save_data(projects):
-    df_projects = pd.DataFrame([{"id": p["id"], "name": p["name"]} for p in projects])
+    df_projects = pd.DataFrame(
+        [
+            {
+                "id": p["id"],
+                "name": p["name"],
+                "color": p.get("color", "#e0f7fa"),  # Default color if not provided
+            }
+            for p in projects
+        ]
+    )
     df_tasks = pd.DataFrame(
         [
             {
@@ -55,8 +64,18 @@ def index():
 def add_project():
     global project_id_counter
     project_name = request.form.get("project")
+    project_color = request.form.get(
+        "color", "#e0f7fa"
+    )  # Default color if not provided
     if project_name:
-        projects.append({"id": project_id_counter, "name": project_name, "tasks": []})
+        projects.append(
+            {
+                "id": project_id_counter,
+                "name": project_name,
+                "color": project_color,
+                "tasks": [],
+            }
+        )
         project_id_counter += 1
         save_data(projects)
     return redirect(url_for("index"))
@@ -133,6 +152,17 @@ def delete_project(project_id):
     global projects
     projects = [project for project in projects if project["id"] != project_id]
     save_data(projects)
+    return jsonify({"success": True})
+
+
+@app.route("/update_project_color/<int:project_id>", methods=["POST"])
+def update_project_color(project_id):
+    new_color = request.json.get("color")
+    for project in projects:
+        if project["id"] == project_id:
+            project["color"] = new_color
+            save_data(projects)
+            break
     return jsonify({"success": True})
 
 
