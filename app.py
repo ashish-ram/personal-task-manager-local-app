@@ -108,6 +108,18 @@ def update_task_notes(task_id):
     return jsonify({"success": True})
 
 
+@app.route("/update_task_name/<int:task_id>", methods=["POST"])
+def update_task_name(task_id):
+    new_name = request.json.get("name")
+    for project in projects:
+        for task in project["tasks"]:
+            if task["id"] == task_id:
+                task["name"] = new_name
+                save_data(projects)
+                break
+    return jsonify({"success": True})
+
+
 @app.route("/delete_task/<int:task_id>", methods=["POST"])
 def delete_task(task_id):
     for project in projects:

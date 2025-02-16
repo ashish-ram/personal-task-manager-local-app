@@ -49,7 +49,7 @@
                         <h3>Backlog</h3>
                         {% for task in project.tasks if task.state == 'backlog' %}
                             <div class="task" data-task-id="{{ task.id }}">
-                                {{ task.name }}
+                                <span class="task-name" data-task-id="{{ task.id }}">{{ task.name }}</span>
                                 <button class="toggle-notes" data-task-id="{{ task.id }}">&#x25BC;</button>
                                 <div class="notes-container" data-task-id="{{ task.id }}" style="display: none;">
                                     <div class="task-notes" data-task-id="{{ task.id }}">{% autoescape false %}{{ task.notes }}{% endautoescape %}</div>
@@ -64,7 +64,7 @@
                         <h3>Ongoing</h3>
                         {% for task in project.tasks if task.state == 'ongoing' %}
                             <div class="task" data-task-id="{{ task.id }}">
-                                {{ task.name }}
+                                <span class="task-name" data-task-id="{{ task.id }}">{{ task.name }}</span>
                                 <button class="toggle-notes" data-task-id="{{ task.id }}">&#x25BC;</button>
                                 <div class="notes-container" data-task-id="{{ task.id }}" style="display: none;">
                                     <div class="task-notes" data-task-id="{{ task.id }}">{% autoescape false %}{{ task.notes }}{% endautoescape %}</div>
@@ -79,7 +79,7 @@
                         <h3>Finished</h3>
                         {% for task in project.tasks if task.state == 'finished' %}
                             <div class="task" data-task-id="{{ task.id }}">
-                                {{ task.name }}
+                                <span class="task-name" data-task-id="{{ task.id }}">{{ task.name }}</span>
                                 <button class="toggle-notes" data-task-id="{{ task.id }}">&#x25BC;</button>
                                 <div class="notes-container" data-task-id="{{ task.id }}" style="display: none;">
                                     <div class="task-notes" data-task-id="{{ task.id }}">{% autoescape false %}{{ task.notes }}{% endautoescape %}</div>
@@ -184,6 +184,39 @@
                         div.style.display = 'none';
                         button.innerHTML = '&#x25BC;'; // Down arrow
                     }
+                });
+            });
+
+            document.querySelectorAll('.task-name').forEach(function(span) {
+                span.addEventListener('dblclick', function() {
+                    var taskId = this.getAttribute('data-task-id');
+                    var currentName = this.textContent;
+                    var input = document.createElement('input');
+                    input.type = 'text';
+                    input.value = currentName;
+                    input.className = 'edit-task-name';
+                    input.setAttribute('data-task-id', taskId);
+                    this.replaceWith(input);
+                    input.focus();
+
+                    input.addEventListener('blur', function() {
+                        var newName = this.value;
+                        fetch(`/update_task_name/${taskId}`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ name: newName })
+                        }).then(function() {
+                            location.reload();
+                        });
+                    });
+
+                    input.addEventListener('keypress', function(e) {
+                        if (e.key === 'Enter') {
+                            input.blur();
+                        }
+                    });
                 });
             });
         });
