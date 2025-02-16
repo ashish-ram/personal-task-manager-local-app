@@ -52,7 +52,7 @@
                                 {{ task.name }}
                                 <button class="toggle-notes" data-task-id="{{ task.id }}">&#x25BC;</button>
                                 <div class="notes-container" data-task-id="{{ task.id }}" style="display: none;">
-                                    <div class="task-notes" data-task-id="{{ task.id }}">{{ task.notes }}</div>
+                                    <div class="task-notes" data-task-id="{{ task.id }}">{% autoescape false %}{{ task.notes }}{% endautoescape %}</div>
                                 </div>
                                 <button class="delete-task" data-task-id="{{ task.id }}">
                                     <i class="fas fa-trash-alt"></i>
@@ -67,7 +67,7 @@
                                 {{ task.name }}
                                 <button class="toggle-notes" data-task-id="{{ task.id }}">&#x25BC;</button>
                                 <div class="notes-container" data-task-id="{{ task.id }}" style="display: none;">
-                                    <div class="task-notes" data-task-id="{{ task.id }}">{{ task.notes }}</div>
+                                    <div class="task-notes" data-task-id="{{ task.id }}">{% autoescape false %}{{ task.notes }}{% endautoescape %}</div>
                                 </div>
                                 <button class="delete-task" data-task-id="{{ task.id }}">
                                     <i class="fas fa-trash-alt"></i>
@@ -82,7 +82,7 @@
                                 {{ task.name }}
                                 <button class="toggle-notes" data-task-id="{{ task.id }}">&#x25BC;</button>
                                 <div class="notes-container" data-task-id="{{ task.id }}" style="display: none;">
-                                    <div class="task-notes" data-task-id="{{ task.id }}">{{ task.notes }}</div>
+                                    <div class="task-notes" data-task-id="{{ task.id }}">{% autoescape false %}{{ task.notes }}{% endautoescape %}</div>
                                 </div>
                                 <button class="delete-task" data-task-id="{{ task.id }}">
                                     <i class="fas fa-trash-alt"></i>
