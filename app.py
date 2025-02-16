@@ -116,5 +116,13 @@ def delete_task(task_id):
     return jsonify({"success": True})
 
 
+@app.route("/delete_project/<int:project_id>", methods=["POST"])
+def delete_project(project_id):
+    global projects
+    projects = [project for project in projects if project["id"] != project_id]
+    save_data(projects)
+    return jsonify({"success": True})
+
+
 if __name__ == "__main__":
     app.run(debug=True)
