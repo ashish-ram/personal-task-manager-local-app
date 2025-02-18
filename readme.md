@@ -113,6 +113,14 @@ color: The new color for the project.
 Data Storage
 The project and task data are stored in an Excel file (data.xlsx). The data is loaded from the file when the application starts and saved back to the file whenever changes are made.
 
+## Build exe
+```
+pyinstaller --name TaskManager --onefile --add-data "templates;templates" --add-data "static;static" app.py
+
+cd dist
+TaskManager.exe
+```
+
 ## Dependencies
 Flask
 pandas
