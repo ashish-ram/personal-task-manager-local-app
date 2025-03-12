@@ -1,3 +1,7 @@
+# How this project way created: 
+This webapp is a dummy project created by just promoting github copilot in VSCODE. 
+The purpose to test the boundry of vide coding. 
+
 # Task Manager Documentation
 
 ## Overview
